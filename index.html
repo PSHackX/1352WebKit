@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1352WebKit - HEN Host</title>
+    <style>
+        body {
+            background-color: #0f111a;
+            color: #e2e8f0;
+            font-family: 'Courier New', Courier, monospace;
+            text-align: center;
+            margin: 0;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #00e5ff;
+            font-size: 2.2em;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .version-tag {
+            color: #8a99ad;
+            font-size: 0.9em;
+            margin-bottom: 25px;
+        }
+
+        /* Panel de Contadores */
+        .stats-panel {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            max-width: 500px;
+            margin: 0 auto 30px auto;
+        }
+
+        .stat-card {
+            background: #171a26;
+            flex: 1;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #23283b;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: #a0aec0;
+            display: block;
+        }
+
+        .stat-val {
+            font-size: 1.8em;
+            font-weight: bold;
+            display: block;
+            margin-top: 5px;
+        }
+
+        /* Colores de estados */
+        #count-success { color: #00e676; }
+        #count-failed { color: #ff5252; }
+        #count-warns { color: #ffd740; }
+
+        /* Consola de Salida */
+        #console-log {
+            background-color: #05070f;
+            border: 1px solid #1d2133;
+            border-radius: 4px;
+            max-width: 650px;
+            height: 220px;
+            margin: 0 auto 25px auto;
+            padding: 15px;
+            text-align: left;
+            overflow-y: auto;
+            font-size: 0.9em;
+            line-height: 1.5;
+            color: #b2ccd6;
+        }
+
+        /* Botón de Activación */
+        .trigger-btn {
+            background: transparent;
+            color: #00e5ff;
+            border: 2px solid #00e5ff;
+            padding: 12px 35px;
+            font-size: 1em;
+            font-weight: bold;
+            font-family: inherit;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .trigger-btn:hover {
+            background: rgba(0, 229, 255, 0.1);
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+        }
+    </style>
+    <!-- Carga del archivo lógico renombrado -->
+    <script src="jailbreak.js" defer></script>
+</head>
+<body>
+
+    <h1>1352WebKit</h1>
+    <div class="version-tag">WebKit Exploitation & ROP Chain Loader</div>
+
+    <!-- Contadores requeridos -->
+    <div class="stats-panel">
+        <div class="stat-card">
+            <span class="stat-label">Success</span>
+            <span id="count-success">0</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Failed</span>
+            <span id="count-failed">0</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Warns</span>
+            <span id="count-warns">0</span>
+        </div>
+    </div>
+
+    <!-- Pantalla de Logs de la Consola -->
+    <div id="console-log">1352WebKit Initialized. Awaiting user action...<br></div>
+
+    <button class="trigger-btn" onclick="lanzarJailbreak()">LAUNCH 1352WEBKIT</button>
+
+</body>
+</html>
