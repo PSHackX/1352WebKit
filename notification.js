@@ -2,8 +2,8 @@
 // MÓDULO DE NOTIFICACIONES PARA 1352WEBKIT
 // ==========================================
 
-// Solicitar los permisos necesarios al sistema operativo/navegador de forma automática
 function inicializarNotificaciones() {
+    // Solicitar permiso de forma segura solo si el navegador lo soporta
     if (window.Notification && Notification.permission !== "granted" && Notification.permission !== "denied") {
         Notification.requestPermission();
     }
@@ -17,10 +17,12 @@ function enviarNotificacionExito() {
             icon: "favicon.ico"
         });
     } else {
-        // Método de respaldo por si el navegador integrado bloquea ventanas flotantes externas
+        // Método de respaldo por si el navegador integrado bloquea las ventanas flotantes
         alert("JAILBREAK LOADED");
     }
 }
 
-// Ejecutar la petición de permisos en cuanto el navegador cargue este script
-inicializarNotificaciones();
+// Asegurar que la petición se ejecute SOLO cuando todo el HTML esté completamente cargado
+document.addEventListener("DOMContentLoaded", function() {
+    inicializarNotificaciones();
+});
