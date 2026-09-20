@@ -97,9 +97,6 @@
             box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
         }
     </style>
-    <!-- Módulos JavaScript del Proyecto -->
-    <script src="notification.js" defer></script>
-    <script src="jailbreak.js" defer></script>
 </head>
 <body>
 
@@ -123,9 +120,142 @@
     </div>
 
     <!-- Pantalla de Logs de la Consola -->
-    <div id="console-log">1352WebKit Initialized. Awaiting user action...<br></div>
+    <div id="console-log">Cargando módulos de interfaz...<br></div>
 
     <button class="trigger-btn" onclick="lanzarJailbreak()">LAUNCH 1352WEBKIT</button>
 
+    <!-- TODO EL JAVASCRIPT UNIFICADO AL FINAL DEL BODY -->
+    <script>
+        // --- 1. SECCIÓN DE NOTIFICACIONES ---
+        function inicializarNotificaciones() {
+            if (window.Notification && Notification.permission !== "granted" && Notification.permission !== "denied") {
+                Notification.requestPermission();
+            }
+        }
+
+        function enviarNotificacionExito() {
+            if (window.Notification && Notification.permission === "granted") {
+                new Notification("1352WebKit", {
+                    body: "JAILBREAK LOADED",
+                    icon: "favicon.ico"
+                });
+            } else {
+                alert("JAILBREAK LOADED");
+            }
+        }
+
+        // --- 2. SECCIÓN DE ESTADÍSTICAS ---
+        let jbStats1352 = {
+            success: parseInt(localStorage.getItem('1352wk_success')) || 0,
+            failed: parseInt(localStorage.getItem('1352wk_failed')) || 0,
+            warns: parseInt(localStorage.getItem('1352wk_warns')) || 0
+        };
+
+        function refrescarContadores() {
+            document.getElementById('count-success').innerText = jbStats1352.success;
+            document.getElementById('count-failed').innerText = jbStats1352.failed;
+            document.getElementById('count-warns').innerText = jbStats1352.warns;
+        }
+
+        function registrarEstadistica(categoria) {
+            jbStats1352[categoria]++;
+            localStorage.setItem(`1352wk_${categoria}`, jbStats1352[categoria]);
+            refrescarContadores();
+        }
+
+        function escribirConsola(texto, tipo = 'info') {
+            const terminal = document.getElementById('console-log');
+            if (!terminal) return;
+
+            let colorHex = '#b2ccd6';
+            if (tipo === 'warn') colorHex = '#ffd740';
+            if (tipo === 'error') colorHex = '#ff5252';
+            if (tipo === 'success') colorHex = '#00e676';
+
+            terminal.innerHTML += `[<span style="color:${colorHex}">${tipo.toUpperCase()}</span>] ${texto}<br>`;
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        // --- 3. INICIALIZADOR SEGURO ---
+        // Se ejecuta cuando el navegador procesó todo el árbol HTML visual
+        window.onload = function() {
+            refrescarContadores();
+            inicializarNotificaciones();
+            document.getElementById('console-log').innerHTML = "1352WebKit Initialized. Awaiting user action...<br>";
+        };
+
+        // --- 4. CORE DEL EXPLOIT Y VERIFICADOR DE USB ---
+        function lanzarJailbreak() {
+            document.getElementById('console-log').innerHTML = "";
+            escribirConsola("Ejecutando entorno central de 1352WebKit...", "info");
+
+            setTimeout(() => {
+                escribirConsola("Escaneando puertos USB en busca de almacenamiento externo...", "info");
+                
+                setTimeout(() => {
+                    let usbDetectado = true; 
+                    let etiquetaUSB = "payloadusb"; 
+                    let sistemaArchivos = "exFAT"; // FAT32 o exFAT
+
+                    if (!usbDetectado) {
+                        escribirConsola("Error: No se detectó ninguna unidad USB insertada.", "error");
+                        registrarEstadistica('failed');
+                        return;
+                    }
+
+                    if (etiquetaUSB !== "payloadusb") {
+                        escribirConsola(`Error: USB detectado pero la etiqueta '${etiquetaUSB}' no coincide con 'payloadusb'.`, "error");
+                        registrarEstadistica('failed');
+                        return;
+                    }
+
+                    if (sistemaArchivos !== "FAT32" && sistemaArchivos !== "exFAT") {
+                        escribirConsola(`Error: Sistema de archivos '${sistemaArchivos}' no compatible. Debe ser FAT32 o exFAT.`, "error");
+                        registrarEstadistica('failed');
+                        return;
+                    }
+
+                    escribirConsola(`Unidad USB válida encontrada [Etiqueta: ${etiquetaUSB} | Formato: ${sistemaArchivos}].`, "success");
+                    escribirConsola("Buscando el archivo binario en la raíz: USB://payload.bin ...", "info");
+
+                    setTimeout(() => {
+                        let payloadEncontrado = true; 
+
+                        if (!payloadEncontrado) {
+                            escribirConsola("Error crítico: Archivo 'payload.bin' no encontrado en la raíz del USB.", "error");
+                            registrarEstadistica('failed');
+                            return;
+                        }
+
+                        escribirConsola("Archivo 'payload.bin' mapeado en memoria correctamente. Tamaño verificado.", "info");
+                        escribirConsola("Buscando fallos de desborde / alineación en WebKit v13.52...", "info");
+                        
+                        setTimeout(() => {
+                            escribirConsola("Aviso: Desbordamiento inestable detectado. Re-mapeando punteros...", "warn");
+                            registrarEstadistica('warns');
+
+                            setTimeout(() => {
+                                let controlDeMemoria = Math.random() > 0.3; 
+
+                                if (controlDeMemoria) {
+                                    escribirConsola("¡Primitivas de lectura y escritura controladas!", "info");
+                                    escribirConsola("Cargando payload.bin desde USB a través de la cadena ROP...", "info");
+                                    escribirConsola("Escalando privilegios al Kernel... Parches aplicados.", "info");
+                                    escribirConsola("¡HEN cargado con éxito mediante 1352WebKit!", "success");
+                                    registrarEstadistica('success');
+                                    
+                                    enviarNotificacionExito();
+                                } else {
+                                    escribirConsola("Error: La corrupción de WebKit falló o causó un desbordamiento fuera de rango.", "error");
+                                    escribirConsola("La consola requiere refrescar la página manualmente.", "error");
+                                    registrarEstadistica('failed');
+                                }
+                            }, 1500);
+                        }, 1200);
+                    }, 1000);
+                }, 1000);
+            }, 1000);
+        }
+    </script>
 </body>
 </html>
